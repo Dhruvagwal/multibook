@@ -1,0 +1,10 @@
+fitz==0.0.1.dev2
+Flask==1.1.2
+Flask_Cors==3.0.10
+googletrans==3.0.0
+numpy==1.21.5
+pandas==1.4.4
+PyMuPDF==1.21.1
+pyrebase==3.0.27
+Pyrebase4==4.6.0
+tqdm==4.64.1
