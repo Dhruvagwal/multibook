@@ -4,7 +4,7 @@ from flask_cors import CORS
 import numpy as np
 from pdf_extract_json import PDF
 from translate import translate
-
+from unflatten_pdf import unflatten 
 
 class NumpyEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -18,9 +18,8 @@ CORS(app)
 @app.route("/convert", methods=["POST"])
 def convert():
     files = request.files
-    lang = request.form.get("lang")
     id = request.form.get("id")
-    if "pdf" in files and lang:
+    if "pdf" in files:
         pdf = files["pdf"].read()
         page_num = 0
         pdf = PDF(pdf, page_num, id)
@@ -33,17 +32,18 @@ def convert():
     file = json.dumps({"html": None}, cls=NumpyEncoder)
     return file, 200
 
-# @app.route("/unflatten", methods=["POST"])
-# def unflat():
-#     id = request.form.get("id")
-#     page_num = request.form.get("idx")
-#     if id and page_num:
-#         html = unflatten(id,int(page_num))
-#         file = json.dumps({"html": html}, cls=NumpyEncoder)
-#         return file, 200
+@app.route("/unflatten", methods=["POST"])
+def unflat():
+    id = request.form.get("id")
+    page_num = request.form.get("idx")
+    # print(id, page_num)
+    if id and page_num:
+        data = unflatten(id,int(page_num))
+        file = json.dumps(data, cls=NumpyEncoder)
+        return file, 200
 
-#     file = json.dumps({"html": None}, cls=NumpyEncoder)
-#     return file, 200
+    file = json.dumps({"data": None}, cls=NumpyEncoder)
+    return file, 200
 
 
 @app.route("/translate/<string:lang>", methods=["POST"])
@@ -52,6 +52,7 @@ def trans(lang):
     response = json.loads(response)
     try:
         text = response["text"]
+        print(text)
         if text:
             trans_text = translate(text, lang)
             return {"text": trans_text}, 200
@@ -67,4 +68,4 @@ def main():
 
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)

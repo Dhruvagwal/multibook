@@ -282,7 +282,7 @@ class PDF:
         pix = self.page.get_pixmap()
         if not pix.is_unicolor :
             bytesarray = pix.tobytes()
-            return fb.store(f"/images/{self.id}/%s.png"%self.gen_id(),bytesarray)
+            return fb.store(f"/assets/{self.id}/images/%s.png"%self.gen_id(),bytesarray)
         return False
             
 
@@ -303,8 +303,6 @@ class PDF:
 
 
         """
-        html = htmlCreater.create_html(coord)
-
         data = self.extract_bg(coord)
         if data :
             self.result_list.append({
@@ -312,10 +310,9 @@ class PDF:
                 "src":data,
                 "width":coord[0],
                 "height":coord[1],
-                "crossOrigin":"anonymous"
+                "crossOrigin":"anonymous",
             })
             # html.add_bg_image(data)
-        return html
 
     # ---------------------------------------------------------------------------------------------------------------------
 
@@ -361,7 +358,6 @@ class PDF:
             isTrue = font_ttf_name in font_list
             if isTrue:
                 url = f"{self.base_url}fonts%2F{font_ttf_name}?alt=media"
-                self.html.create_font_family(basename, url)
                 self.avail_fonts.append(font_ttf_name)
 
             elif ext == "n/a" or ext == None:
